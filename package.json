@@ -1,0 +1,29 @@
+{
+  "name": "sistema-de-gerenciamento-de-tarefas",
+  "version": "1.0.0",
+  "description": "Sistema backend robusto para gerenciamento de tarefas e projetos desenvolvido em Node.js, oferecendo uma API REST completa com autenticação JWT, controle de permissões e funcionalidades avançadas de organização.",
+  "license": "ISC",
+  "author": "Ryan Peterson Pereira",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.5",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.32.0",
+    "jest": "^30.0.5",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
+  }
+}
