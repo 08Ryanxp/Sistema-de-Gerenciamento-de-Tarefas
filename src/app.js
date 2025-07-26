@@ -4,29 +4,34 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 
 const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/user');
-const projectRoutes = require('./routes/project');
-const taskRoutes = require('./routes/task');
+const userRoutes = require('./routes/users');
+const projectRoutes = require('./routes/projects');
+const taskRoutes = require('./routes/tasks');
 
+// Criar app Express
 const app = express();
 
-app.use(helmet());
-app.use(cors());
-app.use(morgan('combined'));
-app.use(express.json());
+// Middleware básicos
+app.use(helmet()); // Segurança
+app.use(cors()); // Permitir requisições de outros domínios
+app.use(morgan('combined')); // Logs das requisições
+app.use(express.json()); // Ler JSON do body
 
-app.get('health', (req, res) => {
-    res.json({status:`OK`, timestamp: new Date()});
+// Rota de health check
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date() });
 });
 
-app.use(`/auth`, authRoutes);
-app.use(`/users`, userRoutes);
-app.use(`/projects`, projectRoutes);
-app.use(`taks`, taskRoutes);
+// Configurar rotas
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/projects', projectRoutes);
+app.use('/tasks', taskRoutes);
 
+// Middleware de erro
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error:`Algo deu Errado!`});
+  console.error(err.stack);
+  res.status(500).json({ error: 'Algo deu errado!' });
 });
 
 module.exports = app;

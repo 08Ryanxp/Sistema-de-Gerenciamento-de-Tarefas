@@ -33,21 +33,26 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 });
 
-userSchema.pre(`save`, async function (next) {
-    if (!this.isModified(`password`)) return next();
-
-    this.password = await bcrypt.hash(this.password, 12);
-    next(); 
+// ANTES de salvar, embaralhar a senha
+userSchema.pre('save', async function(next) {
+  // Se senha não foi modificada, pular
+  if (!this.isModified('password')) return next();
+  
+  // Embaralhar senha
+  this.password = await bcrypt.hash(this.password, 12);
+  next();
 });
 
-userSchema.method.comparePassword = async function (candidatePassword) {
-    return await bcrypt.compare(comparePassword, this.password);
+// Método para comparar senhas
+userSchema.methods.comparePassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.method.toJSON = function() {
-    const user = this.toObject();
-    delete user.password;
-    return user;
+// Esconder senha quando converter para JSON
+userSchema.methods.toJSON = function() {
+  const user = this.toObject();
+  delete user.password;
+  return user;
 };
 
-module.exports = mongoose.model(`User`, userSchema);
+module.exports = mongoose.model('User', userSchema);
