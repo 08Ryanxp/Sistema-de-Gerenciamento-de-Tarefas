@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const authService = require('../services/authService');
 
 // Middleware principal de autenticação
 const auth = async (req, res, next) => {
@@ -13,13 +14,21 @@ const auth = async (req, res, next) => {
       });
     }
 
-    // 2. Extrair token (remove "Bearer " do início)
+    // 2. Extrair token
     const token = authHeader.substring(7);
 
-    // 3. Verificar se token é válido
+    // 3. Verificar se token está na blacklist
+    const isBlacklisted = await authService.isTokenBlacklisted(token);
+    if (isBlacklisted) {
+      return res.status(401).json({ 
+        error: 'Token foi invalidado. Faça login novamente.' 
+      });
+    }
+
+    // 4. Verificar se token é válido
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // 4. Buscar usuário no banco
+    // 5. Buscar usuário no banco
     const user = await User.findById(decoded.userId);
     if (!user) {
       return res.status(401).json({ 
@@ -27,7 +36,7 @@ const auth = async (req, res, next) => {
       });
     }
 
-    // 5. Adicionar usuário na requisição para próximos middlewares
+    // 6. Adicionar usuário na requisição
     req.user = user;
     next();
 

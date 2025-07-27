@@ -1,5 +1,6 @@
 const jwt = require(`jsonwebtoken`);
 const bcrypt = require(`bcryptjs`);
+const BlacklistedToken = require('../models/BlacklistedToken');
 const { Error } = require("mongoose");
 
 // Gerar token JWT
@@ -40,9 +41,22 @@ const comparePassword = async (comparePassword, hashedPassword) => {
     return await bcrypt.compare(comparePassword, hashedPassword);
 };
 
+// Adicionar token à blacklist
+const addToBlacklist = async (token) => {
+    await BlacklistedToken.create({ token });
+};
+
+// Verificar se token está na blacklist
+const isTokenBlacklisted = async (token) => {
+    const blacklistedToken = await BlacklistedToken.findOne({ token });
+    return !!blacklistedToken; // Retorna true se encontrou, false se não
+};
+
 module.exports = {
     generateTokens,
     verifyToken,
     hashPassword,
-    comparePassword
+    comparePassword,
+    addToBlacklist,
+    isTokenBlacklisted
 };
